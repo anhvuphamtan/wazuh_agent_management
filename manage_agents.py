@@ -33,10 +33,12 @@ class WazuhManageAPI:
         
         #print(f"\nRequest headers {self.requests_headers['Authorization']}\n")
 
+    # Get bearer tokens for authenticating to WAZUH MANAGER
     def get_token(self):
-        response = requests.post(self.login_url, headers=self.login_headers, verify=False)
+        response = requests.post(self.login_url, headers = self.login_headers, verify = False)
         return json.loads(response.content.decode())['data']['token']
 
+    # List all agents
     def list_agents(self):
         print("\Listing agents:")
         url = f"{self.protocol}://{self.host}:{self.port}/agents?pretty=true"
@@ -45,9 +47,10 @@ class WazuhManageAPI:
             'select': 'id,name,group,ip,status'
         }
 
-        response = requests.get(url, headers=self.requests_headers, params=params, verify=False)
+        response = requests.get(url, headers = self.requests_headers, params = params, verify=False)
         print(response.text)
 
+    # List all group IDs
     def list_group_ids(self):
         print("\Listing agent group IDs:")
         url = f"{self.protocol}://{self.host}:{self.port}/groups?pretty=true"
@@ -59,6 +62,7 @@ class WazuhManageAPI:
         response = requests.get(url, headers=self.requests_headers, params=params, verify=False)
         print(response.text)
 
+    # Get overall agents status summary
     def get_agents_status_summary(self):
         print("\nGeting agents status summary:")
         url = f"{self.protocol}://{self.host}:{self.port}/agents/summary/status?pretty=true"
@@ -66,6 +70,7 @@ class WazuhManageAPI:
         response = requests.get(url, headers=self.requests_headers, verify=False)
         print(response.text)
 
+    # Get all agents inside a group ID
     def get_agents_in_a_group(self):
         print("\nGetting agents in group:")
         group_id = input("Enter the group ID: ")
@@ -77,9 +82,10 @@ class WazuhManageAPI:
             'status': status
         }
 
-        response = requests.get(url, headers=self.requests_headers, params=params, verify=False)
+        response = requests.get(url, headers = self.requests_headers, params = params, verify = False)
         print(response.text)
 
+    # Delete agents
     def delete_agents(self):
         print("\nDeleting agents:")
         agents_list = input("Enter a list of agent IDs (separated by comma) or 'all' to select all agents: ")
@@ -98,6 +104,7 @@ class WazuhManageAPI:
         response = requests.delete(url, headers=self.requests_headers, params=params, verify=False)
         print(response.text)
 
+    # Create agent group ID
     def create_agent_group(self):
         print("\nCreating agent group:")
         group_id = input("Enter group ID (name): ")
@@ -110,6 +117,7 @@ class WazuhManageAPI:
         response = requests.post(url, headers=self.requests_headers, json=payload_data, verify=False)
         print(response.text)
 
+    # Delete agent group ID
     def delete_agent_group(self):
         print("\nDeleting agent groups:")
         groups_list = input("Enter group IDs in a list, separate by comma: ")
@@ -122,9 +130,11 @@ class WazuhManageAPI:
         response = requests.delete(url, headers=self.requests_headers, params=params, verify=False)
         print(response.text)
 
+# Central command
 def main(): 
     wazuh_api = WazuhManageAPI()
     while True:
+        print("\n====================================================================")
         print("Choose an option:")
         print("1. List all agents")
         print("2. List all agent group IDs")
@@ -145,7 +155,7 @@ def main():
             wazuh_api.get_agents_status_summary()
         elif choice == '4':
             wazuh_api.get_agents_in_a_group()
-        if choice == '5':
+        elif choice == '5':
             wazuh_api.delete_agents()
         elif choice == '6':
             wazuh_api.create_agent_group()

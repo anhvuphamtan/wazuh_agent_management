@@ -1,0 +1,1 @@
+https://documentation.wazuh.com/current/user-manual/api/reference.html#operation/api.controllers.agent_controller.delete_agents
