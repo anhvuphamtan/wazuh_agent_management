@@ -25,7 +25,7 @@ class WazuhManageAPI:
         self.login_headers = {'Content-Type': 'application/json',
                               'Authorization': f'Basic {b64encode(self.basic_auth).decode()}'}
 
-        print("\nLogin request ...\n")
+        print("Login request ...\n")
         self.token = self.get_token()
 
         self.requests_headers = {'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ class WazuhManageAPI:
 
     # List all agents
     def list_agents(self):
-        print("\Listing agents:")
+        print("Listing agents:")
         url = f"{self.protocol}://{self.host}:{self.port}/agents?pretty=true"
         params = {
             'limit': 500,
@@ -48,11 +48,11 @@ class WazuhManageAPI:
         }
 
         response = requests.get(url, headers = self.requests_headers, params = params, verify=False)
-        print(response.text)
+        print(f"\nResponse:\n{response.text}")
 
     # List all group IDs
     def list_group_ids(self):
-        print("\Listing agent group IDs:")
+        print("Listing agent group IDs:")
         url = f"{self.protocol}://{self.host}:{self.port}/groups?pretty=true"
         params = {
             'limit': 500,
@@ -60,19 +60,19 @@ class WazuhManageAPI:
         }
 
         response = requests.get(url, headers=self.requests_headers, params=params, verify=False)
-        print(response.text)
+        print(f"\nResponse:\n{response.text}")
 
     # Get overall agents status summary
     def get_agents_status_summary(self):
-        print("\nGeting agents status summary:")
+        print("Geting agents status summary:")
         url = f"{self.protocol}://{self.host}:{self.port}/agents/summary/status?pretty=true"
 
         response = requests.get(url, headers=self.requests_headers, verify=False)
-        print(response.text)
+        print(f"\nResponse:\n{response.text}")
 
     # Get all agents inside a group ID
     def get_agents_in_a_group(self):
-        print("\nGetting agents in group:")
+        print("Getting agents in group:")
         group_id = input("Enter the group ID: ")
         status = input("Enter list of status of agents (active, pending, never_connected, disconnected), use comma to enter multiple statuses: ")
         url = f"{self.protocol}://{self.host}:{self.port}/groups/{group_id}/agents?pretty=true"
@@ -83,13 +83,14 @@ class WazuhManageAPI:
         }
 
         response = requests.get(url, headers = self.requests_headers, params = params, verify = False)
-        print(response.text)
+        print(f"\nResponse:\n{response.text}")
 
     # Delete agents
     def delete_agents(self):
-        print("\nDeleting agents:")
+        print("Deleting agents:")
         agents_list = input("Enter a list of agent IDs (separated by comma) or 'all' to select all agents: ")
-        status = input("Enter agent status (all, active, pending, never_connected, disconnected) to filter by (separated by comma): ")
+        status = input("Enter agent status (all, active, pending, never_connected, disconnected), separated by comma if multiple, leave blank for all status: ")
+        if (status == ''): status = 'all'
 
         url = f"{self.protocol}://{self.host}:{self.port}/agents?pretty=true"
 
@@ -102,11 +103,11 @@ class WazuhManageAPI:
         }
 
         response = requests.delete(url, headers=self.requests_headers, params=params, verify=False)
-        print(response.text)
+        print(f"\nResponse:\n{response.text}")
 
     # Create agent group ID
     def create_agent_group(self):
-        print("\nCreating agent group:")
+        print("Creating agent group:")
         group_id = input("Enter group ID (name): ")
         url = f"{self.protocol}://{self.host}:{self.port}/groups?pretty=true"
 
@@ -115,11 +116,11 @@ class WazuhManageAPI:
         }
 
         response = requests.post(url, headers=self.requests_headers, json=payload_data, verify=False)
-        print(response.text)
+        print(f"\nResponse:\n{response.text}")
 
     # Delete agent group ID
     def delete_agent_group(self):
-        print("\nDeleting agent groups:")
+        print("Deleting agent groups:")
         groups_list = input("Enter group IDs in a list, separate by comma: ")
         url = f"{self.protocol}://{self.host}:{self.port}/groups?pretty=true"
 
@@ -128,7 +129,7 @@ class WazuhManageAPI:
         }
 
         response = requests.delete(url, headers=self.requests_headers, params=params, verify=False)
-        print(response.text)
+        print(f"\nResponse:\n{response.text}")
 
 # Central command
 def main(): 
